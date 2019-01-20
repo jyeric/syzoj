@@ -301,6 +301,11 @@ class Problem extends Model {
     return user.is_admin;
   }
 
+  async isAllowedHesyProblem(user) {
+    if (!user) return false;
+    return user.is_hesy;
+  }
+  
   getTestdataPath() {
     return syzoj.utils.resolvePath(syzoj.config.upload_dir, 'testdata', this.id.toString());
   }

@@ -15,6 +15,7 @@ let model = db.define('user', {
   submit_num: { type: Sequelize.INTEGER },
 
   is_admin: { type: Sequelize.BOOLEAN },
+  is_hesy: { type: Sequelize.BOOLEAN },
   is_show: { type: Sequelize.BOOLEAN },
   public_email: { type: Sequelize.BOOLEAN },
   prefer_formatted_code: { type: Sequelize.BOOLEAN },

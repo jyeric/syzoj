@@ -209,7 +209,10 @@ app.get('/problem/:id', async (req, res) => {
     if (!await problem.isAllowedUseBy(res.locals.user)) {
       throw new ErrorMessage('您没有权限进行此操作。');
     }
-
+    
+    if (!await problem.isAllowedHesyProblem(res.locals.user)) {
+      throw new ErrorMessage('您不是华二实验的学生，没有权限访问这道题目，若您是华二实验的学生却无法访问这道题目，请联系jyeric。');
+    }
     problem.allowedEdit = await problem.isAllowedEditBy(res.locals.user);
     problem.allowedManage = await problem.isAllowedManageBy(res.locals.user);
 

@@ -302,6 +302,7 @@ class Problem extends Model {
   }
 
   async isAllowedHesyProblem(user) {
+    if (!this.hesy_problem) return true;
     if (!user) return false;
     return user.is_hesy;
   }

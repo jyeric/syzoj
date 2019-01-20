@@ -7,6 +7,7 @@ let Contest = syzoj.model('contest');
 let ProblemTag = syzoj.model('problem_tag');
 let ProblemTagMap = syzoj.model('problem_tag_map');
 let Article = syzoj.model('article');
+let User = syzoj.model('user');
 const Sequelize = require('sequelize');
 
 let Judger = syzoj.lib('judger');

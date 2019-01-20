@@ -218,6 +218,7 @@ let model = db.define('problem', {
   ac_num: { type: Sequelize.INTEGER },
   submit_num: { type: Sequelize.INTEGER },
   is_public: { type: Sequelize.BOOLEAN },
+  hesy_problem: { type: Sequelize.BOOLEAN },
 
   file_io: { type: Sequelize.BOOLEAN },
   file_io_input_name: { type: Sequelize.TEXT },

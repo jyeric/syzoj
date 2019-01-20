@@ -600,7 +600,9 @@ app.post('/problem/:id/submit', app.multer.fields([{ name: 'answer', maxCount: 1
     if (!problem) throw new ErrorMessage('无此题目。');
     if (problem.type !== 'submit-answer' && !syzoj.config.enabled_languages.includes(req.body.language)) throw new ErrorMessage('不支持该语言。');
     if (!curUser) throw new ErrorMessage('请登录后继续。', { '登录': syzoj.utils.makeUrl(['login'], { 'url': syzoj.utils.makeUrl(['problem', id]) }) });
-
+    if (!await problem.isAllowedHesyProblem(res.locals.user)) {
+      throw new ErrorMessage('您不是华二实验的学生，没有权限提交这道题目，若您是华二实验的学生却无法访问这道题目，请联系jyeric。');
+    }
     let judge_state;
     if (problem.type === 'submit-answer') {
       let File = syzoj.model('file'), path;
@@ -740,7 +742,9 @@ app.get('/problem/:id/testdata', async (req, res) => {
 
     if (!problem) throw new ErrorMessage('无此题目。');
     if (!await problem.isAllowedUseBy(res.locals.user)) throw new ErrorMessage('您没有权限进行此操作。');
-
+    if (!await problem.isAllowedHesyProblem(res.locals.user)) {
+      throw new ErrorMessage('您不是华二实验的学生，没有权限访问这道题目的测试数据，若您是华二实验的学生却无法访问这道题目，请联系jyeric。');
+    }
     let testdata = await problem.listTestdata();
     let testcases = await syzoj.utils.parseTestdata(problem.getTestdataPath(), problem.type === 'submit-answer');
 

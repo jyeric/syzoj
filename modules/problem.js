@@ -491,6 +491,10 @@ app.get('/problem/:id/manage', async (req, res) => {
     if (!problem) throw new ErrorMessage('无此题目。');
     if (!await problem.isAllowedEditBy(res.locals.user)) throw new ErrorMessage('您没有权限进行此操作。');
 
+    if (!await problem.isAllowedHesyProblem(res.locals.user)) {
+      throw new ErrorMessage('您不是华二实验的学生，没有权限访问这道题目，若您是华二实验的学生却无法访问这道题目，请联系jyeric。');
+    }
+    
     await problem.loadRelationships();
 
     let testcases = await syzoj.utils.parseTestdata(problem.getTestdataPath(), problem.type === 'submit-answer');
@@ -514,7 +518,11 @@ app.post('/problem/:id/manage', app.multer.fields([{ name: 'testdata', maxCount:
 
     if (!problem) throw new ErrorMessage('无此题目。');
     if (!await problem.isAllowedEditBy(res.locals.user)) throw new ErrorMessage('您没有权限进行此操作。');
-
+    
+    if (!await problem.isAllowedHesyProblem(res.locals.user)) {
+      throw new ErrorMessage('您不是华二实验的学生，没有权限访问这道题目，若您是华二实验的学生却无法访问这道题目，请联系jyeric。');
+    }
+    
     await problem.loadRelationships();
 
     problem.time_limit = req.body.time_limit;
@@ -771,7 +779,10 @@ app.post('/problem/:id/testdata/upload', app.multer.array('file'), async (req, r
 
     if (!problem) throw new ErrorMessage('无此题目。');
     if (!await problem.isAllowedEditBy(res.locals.user)) throw new ErrorMessage('您没有权限进行此操作。');
-
+    if (!await problem.isAllowedHesyProblem(res.locals.user)) {
+      throw new ErrorMessage('您不是华二实验的学生，没有权限访问这道题目，若您是华二实验的学生却无法访问这道题目，请联系jyeric。');
+    }
+    
     if (req.files) {
       for (let file of req.files) {
         await problem.uploadTestdataSingleFile(file.originalname, file.path, file.size, await res.locals.user.hasPrivilege('manage_problem'));
@@ -794,7 +805,10 @@ app.post('/problem/:id/testdata/delete/:filename', async (req, res) => {
 
     if (!problem) throw new ErrorMessage('无此题目。');
     if (!await problem.isAllowedEditBy(res.locals.user)) throw new ErrorMessage('您没有权限进行此操作。');
-
+    if (!await problem.isAllowedHesyProblem(res.locals.user)) {
+      throw new ErrorMessage('您不是华二实验的学生，没有权限访问这道题目，若您是华二实验的学生却无法访问这道题目，请联系jyeric。');
+    }
+    
     await problem.deleteTestdataSingleFile(req.params.filename);
 
     res.redirect(syzoj.utils.makeUrl(['problem', id, 'testdata']));
@@ -813,7 +827,10 @@ app.get('/problem/:id/testdata/download/:filename?', async (req, res) => {
 
     if (!problem) throw new ErrorMessage('无此题目。');
     if (!await problem.isAllowedUseBy(res.locals.user)) throw new ErrorMessage('您没有权限进行此操作。');
-
+    if (!await problem.isAllowedHesyProblem(res.locals.user)) {
+      throw new ErrorMessage('您不是华二实验的学生，没有权限访问这道题目，若您是华二实验的学生却无法访问这道题目，请联系jyeric。');
+    }
+    
     if (!req.params.filename) {
       if (!await syzoj.utils.isFile(problem.getTestdataArchivePath())) {
         await problem.makeTestdataZip();
@@ -840,6 +857,10 @@ app.get('/problem/:id/download/additional_file', async (req, res) => {
 
     if (!problem) throw new ErrorMessage('无此题目。');
 
+    if (!await problem.isAllowedHesyProblem(res.locals.user)) {
+      throw new ErrorMessage('您不是华二实验的学生，没有权限访问这道题目，若您是华二实验的学生却无法访问这道题目，请联系jyeric。');
+    }
+    
     // XXX: Reduce duplication (see the '/problem/:id/submit' handler)
     let contest_id = parseInt(req.query.contest_id);
     if (contest_id) {
@@ -873,7 +894,11 @@ app.get('/problem/:id/statistics/:type', async (req, res) => {
 
     if (!problem) throw new ErrorMessage('无此题目。');
     if (!await problem.isAllowedUseBy(res.locals.user)) throw new ErrorMessage('您没有权限进行此操作。');
-
+    
+    if (!await problem.isAllowedHesyProblem(res.locals.user)) {
+      throw new ErrorMessage('您不是华二实验的学生，没有权限访问这道题目，若您是华二实验的学生却无法访问这道题目，请联系jyeric。');
+    }
+        
     let count = await problem.countStatistics(req.params.type);
     if (count === null) throw new ErrorMessage('无此统计类型。');
 
